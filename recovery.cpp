@@ -176,21 +176,13 @@ static bool yes_no(Device* device, const char* question1, const char* question2)
 }
 
 bool ask_to_continue_unverified(Device* device) {
-  if (get_build_type() == "user") {
-    return false;
-  } else {
     device->GetUI()->SetProgressType(RecoveryUI::EMPTY);
     return yes_no(device, "Signature verification failed", "Install anyway?");
-  }
 }
 
 bool ask_to_continue_downgrade(Device* device) {
-  if (get_build_type() == "user") {
-    return false;
-  } else {
     device->GetUI()->SetProgressType(RecoveryUI::EMPTY);
     return yes_no(device, "This package will downgrade your system", "Install anyway?");
-  }
 }
 
 static bool ask_to_wipe_data(Device* device) {
@@ -206,7 +198,7 @@ static bool ask_to_wipe_data(Device* device) {
 
 static InstallResult apply_update_menu(Device* device, Device::BuiltinAction* reboot_action){
   RecoveryUI* ui = device->GetUI();
-  std::vector<std::string> headers{ "Apply update" };
+  std::vector<std::string> headers{ "Install options" };
   std::vector<std::string> items;
 
   const int item_sideload = 0;
@@ -216,14 +208,14 @@ static InstallResult apply_update_menu(Device* device, Device::BuiltinAction* re
 
   for (;;) {
     items.clear();
-    items.push_back("Apply from ADB");
+    items.push_back("Sideload from ADB");
     VolumeManager::Instance()->getVolumeInfo(volumes);
     for (auto vol = volumes.begin(); vol != volumes.end(); /* empty */) {
       if (!vol->mMountable) {
         vol = volumes.erase(vol);
         continue;
       }
-      items.push_back("Choose from " + vol->mLabel);
+      items.push_back("Install from " + vol->mLabel);
       ++vol;
     }
 

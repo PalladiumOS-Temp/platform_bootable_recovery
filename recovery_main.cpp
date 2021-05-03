@@ -472,13 +472,6 @@ int main(int argc, char** argv) {
     device->RemoveMenuItemForAction(Device::WIPE_CACHE);
   }
 
-  if (android::base::GetBoolProperty("ro.build.ab_update", false)) {
-    // There's not much point in formatting the active slot's system partition
-    // because ROMs are flashed to the inactive slot. Removing the menu option
-    // prevents users from accidentally trashing a functioning ROM.
-    device->RemoveMenuItemForAction(Device::WIPE_SYSTEM);
-  }
-
   if (!android::base::GetBoolProperty("ro.boot.dynamic_partitions", false) &&
       !android::base::GetBoolProperty("ro.fastbootd.available", false)) {
     device->RemoveMenuItemForAction(Device::ENTER_FASTBOOT);
@@ -492,11 +485,6 @@ int main(int argc, char** argv) {
 
   if (get_build_type() != "userdebug") {
     device->RemoveMenuItemForAction(Device::ENABLE_ADB);
-  }
-
-  if (get_build_type() == "user") {
-    device->RemoveMenuItemForAction(Device::WIPE_SYSTEM);
-    device->RemoveMenuItemForAction(Device::MOUNT_SYSTEM);
   }
 
   ui->SetBackground(RecoveryUI::NONE);
